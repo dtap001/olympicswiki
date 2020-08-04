@@ -26,6 +26,7 @@ namespace OlympicsWiki
         public void ConfigureServices (IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<DbContext, AppDBContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +38,8 @@ namespace OlympicsWiki
             }
 
             app.UseHttpsRedirection();
-
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthorization();
