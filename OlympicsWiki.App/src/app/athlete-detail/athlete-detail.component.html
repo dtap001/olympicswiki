@@ -1,0 +1,60 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutGap="20px">
+        <span></span>
+        <h3 *ngIf="selectedId =='-1'">Adding new athlete</h3>
+        <h3 *ngIf="selectedId !='-1'">Editing athlete</h3>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Country</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <mat-form-field>
+            <mat-label>Birth</mat-label>
+            <input matInput [matDatepicker]="picker2" (dateChange)="onBirthChange($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2 color="primary"></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Birth place</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+    </div>
+
+    <div class="combocontainer">
+        <mat-form-field>
+            <label>combobox1</label>
+            <input type="text" ng-model="chosen" />
+        </mat-form-field>
+        <mat-form-field class="comboinput">
+            <mat-select ng-model="chosen" md-container-class="combomenu">
+                <mat-option ng-value="'item 1'">item 1</mat-option>
+                <mat-option ng-value="'item 2'">item 2</mat-option>
+                <mat-option ng-value="'item 3'">item 3</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="combocontainer">
+        <mat-form-field>
+            <label>combobox2</label>
+            <input type="text" ng-model="chosen2" />
+        </mat-form-field>
+        <mat-form-field class="comboinput">
+            <mat-select ng-model="chosen2" md-container-class="combomenu">
+                <mat-option ng-value="'item 1'">item 1</mat-option>
+                <mat-option ng-value="'item 2'">item 2</mat-option>
+                <mat-option ng-value="'item 3'">item 3</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+
+</div>

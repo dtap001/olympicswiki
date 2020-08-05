@@ -1,0 +1,19 @@
+.combocontainer{
+    width:200px;
+    display:inline;
+}
+.comboinput {
+    position:relative;
+    top:-3px;
+    left:-2.75em;
+}
+.comboinput div._md-text{
+    display:none !important;
+}
+.comboinput md-select-value:not([disabled]):focus ._md-select-value{
+    border-bottom:none;
+}
+.comboinput md-select-value{
+    min-width: 0.0em;
+    border-bottom:none !important;
+}

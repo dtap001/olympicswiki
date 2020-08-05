@@ -1,0 +1,36 @@
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <span></span>
+    <h3>Filters</h3>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-around center">
+    <mat-form-field class="example-form-field">
+        <mat-label>Athlete name</mat-label>
+        <input matInput type="text" [(ngModel)]="athleteName">
+        <button mat-button *ngIf="athleteName" matSuffix mat-icon-button aria-label="Clear" (click)="athleteName=''">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Born after</mat-label>
+        <input matInput [matDatepicker]="picker1" (dateChange)="onMinDateChange($event)">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Born before</mat-label>
+        <input matInput [matDatepicker]="picker2" (dateChange)="onMaxDateChange($event)">
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2 color="primary"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Country</mat-label>
+        <mat-select [(value)]="country">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let item of allCountries" value="item">{{item}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-raised-button (click)="search()">Search</button>
+</div>

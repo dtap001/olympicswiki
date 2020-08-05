@@ -1,0 +1,41 @@
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
+  <span></span>
+
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+    <h3>Athletes</h3>
+    <div>
+        <button mat-raised-button [routerLink]="['/athlete',-1]">New athlete</button>
+    </div>
+</div>
+</div>
+<table mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="country">
+    <th mat-header-cell *matHeaderCellDef> Country </th>
+    <td mat-cell *matCellDef="let athlete"> {{athlete.country}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let athlete"> {{athlete.fullName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="age">
+    <th mat-header-cell *matHeaderCellDef> Age </th>
+    <td mat-cell *matCellDef="let athlete"> {{getAge(athlete.birth) }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="sports">
+    <th mat-header-cell *matHeaderCellDef> Sports </th>
+    <td mat-cell *matCellDef="let athlete"> {{getSports(athlete) }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef> Edit </th>
+    <td mat-cell *matCellDef="let athlete">
+      <mat-icon [routerLink]="['/athlete', athlete.id]">create</mat-icon>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OlympicsWiki.DB;
+using OlympicsWiki.DB.Models;
 
 namespace OlympicsWiki.Controllers
 {
@@ -10,6 +13,11 @@ namespace OlympicsWiki.Controllers
     [ApiController]
     public class AthletesController : ControllerBase
     {
+        AppDBContext dBContext;
+        public AthletesController (AppDBContext dBContext)
+        {
+            this.dBContext = dBContext;
+        }
         // GET: api/<AthletesController>
         [HttpGet]
         public IEnumerable<string> Get ()
@@ -20,17 +28,71 @@ namespace OlympicsWiki.Controllers
 
         public class AthletesSearch
         {
+            public string Name { get; set; }
+            public DateTime? MaxBirth { get; set; }
+            public DateTime? MinBirth { get; set; }
+
+            public string Country { get; set; }
+        }
+        public class AthletesSearchResponse
+        {
+            public List<AthleteDTO> athletes { get; set; }
+        }
+        public class AthleteDTO
+        {
+            public int Id { get; set; }
+            public string FullName { get; set; }
+            public DateTime Birth { get; set; }
+            public string BirthPlace { get; set; }
+            public string Country { get; set; }
+            public List<SportDTO> Sports { get; set; }
+        }
+        public class SportDTO
+        {
             public int Id { get; set; }
             public string Name { get; set; }
-            public DateTime MaxBirth { get; set; }
-            public DateTime MinBirth { get; set; }
+        }
 
-        }
-        [HttpGet("searches")]
-        public string Searches ()
+        [HttpPost("search")]
+        public AthletesSearchResponse Searches (AthletesSearch search)
         {
-            return "value";
+            var query = dBContext.Athletes.Include(x => x.Sports).Where(x => true);
+            if (!string.IsNullOrEmpty(search.Country))
+            {
+                query.Where(x => x.Country == search.Country);
+            }
+            if (search.MaxBirth != null)
+            {
+                query.Where(x => x.Birth < search.MaxBirth);
+            }
+            if (search.MinBirth != null)
+            {
+                query.Where(x => x.Birth > search.MinBirth);
+            }
+            if (!string.IsNullOrEmpty(search.Name))
+            {
+                query.Where(x => x.FullName.ToLower().Contains(search.Name.ToLower()));
+            }
+
+            query.GroupBy(x => x.Country);
+
+            var result = query.Select(x => new AthleteDTO()
+            {
+                Birth = x.Birth,
+                BirthPlace = x.BirthPlace,
+                Country = x.Country,
+                FullName = x.FullName,
+                Id = x.Id,
+                Sports = x.Sports.Select(y => new SportDTO()
+                {
+                    Id = y.SportId,
+                    Name = y.Sport.Name
+                }).ToList()
+            });
+
+            return new AthletesSearchResponse() { athletes = result.ToList() };
         }
+
 
         // POST api/<AthletesController>
         [HttpPost]

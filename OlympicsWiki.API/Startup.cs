@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OlympicsWiki.DB;
 
 namespace OlympicsWiki
 {
@@ -26,7 +28,7 @@ namespace OlympicsWiki
         public void ConfigureServices (IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<DbContext, AppDBContext>();
+            services.AddDbContext<AppDBContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +45,10 @@ namespace OlympicsWiki
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200", "http://localhost:5000", "https://localhost:5001")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials());
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
