@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Athlete } from '../models/search-model';
 import { MatTableDataSource } from '@angular/material/table';
+import COUNTRIES from '../countries';
 
 @Component({
   selector: 'app-athletes-table',
@@ -8,8 +9,9 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./athletes-table.component.scss']
 })
 export class AthletesTableComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'country', 'age', 'sports', 'edit'];
+  displayedColumns: string[] = ['name', 'country', 'age', 'sports', 'edit', 'delete'];
 
+  @Output() onDelete = new EventEmitter<number>();
   @Input()
   set athletes(val: Athlete[]) {
     this.dataSource = new MatTableDataSource<Athlete>(val);
@@ -41,6 +43,19 @@ export class AthletesTableComponent implements OnInit {
     }
     return age;
   }
+  getCountryFlag(countryName) {
+     let country = COUNTRIES.filter(function (element, index, array) {
+      if (element.name == countryName) {
+        return true;
+      }
+      return false;
+    });
+    if(country.length ==0){return "";}
+    return `https://www.countryflags.io/${country[0].code}/flat/32.png`;
+  }
 
-
+  deleteAthlete(id) {
+    console.log("deleteAthlete");
+    this.onDelete.emit(id);
+  }
 }

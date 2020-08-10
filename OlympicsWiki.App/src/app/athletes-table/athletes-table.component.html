@@ -4,14 +4,19 @@
   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
     <h3>Athletes</h3>
     <div>
-        <button mat-raised-button [routerLink]="['/athlete',-1]">New athlete</button>
+      <button mat-raised-button [routerLink]="['/athlete',-1]">New athlete</button>
     </div>
-</div>
+  </div>
 </div>
 <table mat-table [dataSource]="dataSource">
   <ng-container matColumnDef="country">
     <th mat-header-cell *matHeaderCellDef> Country </th>
-    <td mat-cell *matCellDef="let athlete"> {{athlete.country}} </td>
+    <td mat-cell *matCellDef="let athlete">
+      <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+        <img src="{{getCountryFlag(athlete.country)}}">
+        <div>{{athlete.country}}</div>
+      </div>
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="name">
@@ -35,7 +40,12 @@
       <mat-icon [routerLink]="['/athlete', athlete.id]">create</mat-icon>
     </td>
   </ng-container>
-
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef> Delete </th>
+    <td mat-cell *matCellDef="let athlete">
+      <mat-icon (click)="deleteAthlete(athlete.id)">delete</mat-icon>
+    </td>
+  </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

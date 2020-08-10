@@ -1,0 +1,43 @@
+Versioning
+	- versioning should be done with git
+	- branching strategy should use GitFlow. Which means the master branch only contains the released developments. 
+	The develop branch contains the currently not released but tested and working features. 
+	New developments should be in separate feature branch which merged back to the develop branch after successfully testing.
+	Whenever there is a need for a hotfix we simply create a hotfix branch from the master (which is the currently released status) and create a build from that.
+
+	
+CI/CD process:
+	Pipeline:
+		State 1:
+			git push
+			dotnet restore
+			dotnet build
+			run unit tests
+			code style check
+		Stage 2:
+			docker build
+			docker tage with 'test'
+			run integration tests
+			deploy to staging server
+			run smoke tests
+		Stage 3:
+			run UI tests on staging server
+			run benchmark tests
+			docker tag with 'production'
+		Stage 4:
+			deploy to production
+			
+Environments:
+	developer environment is on the developer machine
+	staging environment
+	release environment
+
+Azure:
+	Testing environment:
+		standard 2vCPU and 4GB ram linux container
+		standard ms sql server for the database
+		standard load balancer as a reverse proxy
+	Release environment 
+		3x standard 3vCPU 8GB ram linux container in a docker swarm
+		standard ms sql server for the database
+		high availabilty load balancer as a reverse proxy

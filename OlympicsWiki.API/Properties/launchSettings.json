@@ -12,15 +12,13 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "OlympicsWiki": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "athletes",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

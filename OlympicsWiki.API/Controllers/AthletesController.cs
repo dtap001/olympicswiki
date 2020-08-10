@@ -19,12 +19,23 @@ namespace OlympicsWiki.Controllers
             this.dBContext = dBContext;
         }
         // GET: api/<AthletesController>
-        [HttpGet]
-        public IEnumerable<string> Get ()
+        [HttpGet("{id}")]
+        public AthleteDTO Get (int id)
         {
-            return new string[] { "value1", "value2" };
+            return dBContext.Athletes.Where(x => x.Id == id).Select(x => new AthleteDTO()
+            {
+                Id = x.Id,
+                Birth = x.Birth,
+                BirthPlace = x.BirthPlace,
+                Country = x.Country,
+                FullName = x.FullName,
+                Sports = x.Sports.Select(y => new SportDTO()
+                {
+                    Id = y.SportId,
+                    Name = y.Sport.Name
+                }).ToList()
+            }).SingleOrDefault();
         }
-
 
         public class AthletesSearch
         {
@@ -40,7 +51,7 @@ namespace OlympicsWiki.Controllers
         }
         public class AthleteDTO
         {
-            public int Id { get; set; }
+            public int? Id { get; set; }
             public string FullName { get; set; }
             public DateTime Birth { get; set; }
             public string BirthPlace { get; set; }
@@ -56,27 +67,26 @@ namespace OlympicsWiki.Controllers
         [HttpPost("search")]
         public AthletesSearchResponse Searches (AthletesSearch search)
         {
-            var query = dBContext.Athletes.Include(x => x.Sports).Where(x => true);
+            var query = dBContext.Athletes.Include(x => x.Sports).ThenInclude(x => x.Sport);
             if (!string.IsNullOrEmpty(search.Country))
             {
-                query.Where(x => x.Country == search.Country);
+                query = query.Where(x => x.Country == search.Country).Include(x => x.Sports).ThenInclude(x => x.Sport);
             }
             if (search.MaxBirth != null)
             {
-                query.Where(x => x.Birth < search.MaxBirth);
+                query = query.Where(x => x.Birth <= search.MaxBirth).Include(x => x.Sports).ThenInclude(x => x.Sport);
             }
             if (search.MinBirth != null)
             {
-                query.Where(x => x.Birth > search.MinBirth);
+                query = query.Where(x => x.Birth >= search.MinBirth).Include(x => x.Sports).ThenInclude(x => x.Sport);
             }
             if (!string.IsNullOrEmpty(search.Name))
             {
-                query.Where(x => x.FullName.ToLower().Contains(search.Name.ToLower()));
+                query = query.Where(x => x.FullName.ToLower().Contains(search.Name.ToLower())).Include(x => x.Sports).ThenInclude(x => x.Sport);
             }
+            query = query.OrderBy(x => x.Country).Include(x => x.Sports).ThenInclude(x => x.Sport);
 
-            query.GroupBy(x => x.Country);
-
-            var result = query.Select(x => new AthleteDTO()
+            var result = query.ToList().Select(x => new AthleteDTO()
             {
                 Birth = x.Birth,
                 BirthPlace = x.BirthPlace,
@@ -89,15 +99,49 @@ namespace OlympicsWiki.Controllers
                     Name = y.Sport.Name
                 }).ToList()
             });
-
             return new AthletesSearchResponse() { athletes = result.ToList() };
         }
 
 
         // POST api/<AthletesController>
         [HttpPost]
-        public void Post ([FromBody] string value)
+        public void Post (AthleteDTO athlete)
         {
+            Athlete athleteToSave = dBContext.Athletes.Where(x => x.Id == athlete.Id).SingleOrDefault();
+            bool isNew = false;
+            if (athleteToSave == null)
+            {
+                isNew = true;
+                athleteToSave = new Athlete();
+            }
+            athleteToSave.Country = athlete.Country;
+            athleteToSave.Birth = athlete.Birth;
+            athleteToSave.BirthPlace = athlete.BirthPlace;
+            athleteToSave.FullName = athlete.FullName;
+
+            if (!isNew)//remove existing links
+            {
+                dBContext.AthleteSports.RemoveRange(dBContext.AthleteSports.Where(x => x.AthleteId == athleteToSave.Id));
+            }
+
+            if (isNew)
+            {
+                dBContext.Athletes.Add(athleteToSave);
+            }
+
+            dBContext.SaveChanges();
+            if (athlete.Sports != null)
+            {
+                foreach (var sportDTO in athlete.Sports)
+                {
+                    dBContext.AthleteSports.Add(new AthleteSport()
+                    {
+                        AthleteId = athleteToSave.Id,
+                        SportId = sportDTO.Id
+                    });
+                }
+            }
+            dBContext.SaveChanges();
         }
 
         // PUT api/<AthletesController>/5
@@ -110,6 +154,13 @@ namespace OlympicsWiki.Controllers
         [HttpDelete("{id}")]
         public void Delete (int id)
         {
+            var toDelete = dBContext.Athletes.Where(x => x.Id == id).SingleOrDefault();
+            if (toDelete == null)
+            {
+                return;
+            }
+            dBContext.Athletes.Remove(toDelete);
+            dBContext.SaveChanges();
         }
     }
 }

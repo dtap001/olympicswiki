@@ -11,13 +11,26 @@ export class AthletesComponent implements OnInit {
 
   constructor(private backendService: BackendService) { }
   public athletes: Athlete[] = [];
-  ngOnInit(): void { }
+  lastSearch:AthleteSearchRequestModel;
+  ngOnInit(): void {
+    this.doSearch({ name: null, country: null, maxBirth: null, minBirth: null });
+  }
 
   doSearch(searchEvent: AthleteSearchRequestModel) {
-    this.backendService.athletesSearch(searchEvent).subscribe((response: AthleteSearchResponseModel) => {     
+    this.lastSearch = searchEvent;
+    this.backendService.athletesSearch(searchEvent).subscribe((response: AthleteSearchResponseModel) => {
       this.athletes = response.athletes;
-    }, (err) => {     
+    }, (err) => {
       console.log("err: " + err);
     });
   }
+  doDelete(id){
+    console.log("doDelete")
+    this.backendService.deleteAthlete(id).subscribe(() => {
+      this.doSearch(this.lastSearch);
+    }, (err) => {
+      console.log("err: " + err);
+    });  
+  }
+
 }

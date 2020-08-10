@@ -1,4 +1,4 @@
-<div fxLayout="column">
+<form [formGroup]="form" fxLayout="column">
     <div fxLayout="row" fxLayoutGap="20px">
         <span></span>
         <h3 *ngIf="selectedId =='-1'">Adding new athlete</h3>
@@ -7,54 +7,59 @@
     <div fxLayout="row" fxLayoutAlign="space-around center">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput type="text">
-        </mat-form-field>
+            <input matInput type="text" formControlName="name">
+        </mat-form-field>       
 
         <mat-form-field>
             <mat-label>Country</mat-label>
-            <input matInput type="text">
+            <mat-select formControlName="country">
+                <mat-option *ngFor="let country of allCountries" [value]="country.name">{{country.name}}</mat-option>
+            </mat-select>
         </mat-form-field>
+
     </div>
     <div fxLayout="row" fxLayoutAlign="space-around center">
         <mat-form-field>
             <mat-label>Birth</mat-label>
-            <input matInput [matDatepicker]="picker2" (dateChange)="onBirthChange($event)">
+            <input matInput [matDatepicker]="picker2" (dateChange)="onBirthChange($event)" formControlName="birth">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2 color="primary"></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Birth place</mat-label>
-            <input matInput type="text">
+            <input matInput type="text" formControlName="birthPlace">
         </mat-form-field>
     </div>
 
-    <div class="combocontainer">
-        <mat-form-field>
-            <label>combobox1</label>
-            <input type="text" ng-model="chosen" />
-        </mat-form-field>
-        <mat-form-field class="comboinput">
-            <mat-select ng-model="chosen" md-container-class="combomenu">
-                <mat-option ng-value="'item 1'">item 1</mat-option>
-                <mat-option ng-value="'item 2'">item 2</mat-option>
-                <mat-option ng-value="'item 3'">item 3</mat-option>
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <mat-form-field appearance="fill">
+            <mat-label>Sports</mat-label>
+            <mat-select formControlName="selectedSports" multiple>
+                <div *ngFor="let sport of allSports" fxLayout="column" fxLayoutAlign="center stretch">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-option fxFlex="80" [value]="sport">{{sport.name}}</mat-option>
+                        <mat-icon fxFlex="20" (click)="deleteSport(sport)">delete</mat-icon>
+                    </div>
+                </div>
             </mat-select>
         </mat-form-field>
-    </div>
-    <div class="combocontainer">
-        <mat-form-field>
-            <label>combobox2</label>
-            <input type="text" ng-model="chosen2" />
-        </mat-form-field>
-        <mat-form-field class="comboinput">
-            <mat-select ng-model="chosen2" md-container-class="combomenu">
-                <mat-option ng-value="'item 1'">item 1</mat-option>
-                <mat-option ng-value="'item 2'">item 2</mat-option>
-                <mat-option ng-value="'item 3'">item 3</mat-option>
-            </mat-select>
-        </mat-form-field>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field>
+                <mat-label>Add new sport</mat-label>
+                <input matInput type="text" [(ngModel)]="newSportName" [ngModelOptions]="{standalone: true}"
+                    name="newSportName">
+                <button mat-button *ngIf="newSportName" matSuffix mat-icon-button (click)="newSport(newSportName)">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
     </div>
 
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center">
+        <button mat-raised-button (click)="back()">Back</button>
+        <span></span>
+        <button mat-raised-button [disabled]="!form.valid  || isSavingInProgress" (click)="save()">Save</button>
+    </div>
 
-</div>
+</form>

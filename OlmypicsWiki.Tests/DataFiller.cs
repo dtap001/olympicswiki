@@ -39,11 +39,17 @@ namespace OlympicsWiki.Tests
             };
             AddSportIfNotExists(db, box);
 
+            var gymnastic = new DB.Models.Sport()
+            {
+                Name = "Gymnastic"
+            };
+            AddSportIfNotExists(db, gymnastic);
+
             var usainBolt = new DB.Models.Athlete()
             {
                 FullName = "Usain Bolt",
                 Birth = DateTime.Parse("1986.08.21."),
-                BirthPlace = "Jamaica",
+                BirthPlace = "Kingston",
                 Country = "Jamaica",
             };
             AddAthleteIfNotExists(db, usainBolt);
@@ -54,7 +60,7 @@ namespace OlympicsWiki.Tests
                 FullName = "Michael Phelps",
                 Birth = DateTime.Parse("1985.06.30."),
                 BirthPlace = "USA",
-                Country = "USA",
+                Country = "United States",
             };
             AddAthleteIfNotExists(db, mPhelps);
             ConnectAthleteToSportIfNotExists(db, mPhelps, swimming);
@@ -63,8 +69,8 @@ namespace OlympicsWiki.Tests
             {
                 FullName = "Muhammad Ali",
                 Birth = DateTime.Parse("1942.01.17."),
-                BirthPlace = "USA",
-                Country = "USA",
+                BirthPlace = "Chicago",
+                Country = "United States",
             };
             AddAthleteIfNotExists(db, mAli);
             ConnectAthleteToSportIfNotExists(db, mAli, box);
@@ -73,12 +79,22 @@ namespace OlympicsWiki.Tests
             {
                 FullName = "Pablo Morales",
                 Birth = DateTime.Parse("1964.12.05."),
-                BirthPlace = "USA",
-                Country = "USA",
+                BirthPlace = "New York",
+                Country = "United States",
             };
             AddAthleteIfNotExists(db, pMorales);
             ConnectAthleteToSportIfNotExists(db, pMorales, swimming);
 
+
+            var lLatynina = new DB.Models.Athlete()
+            {
+                FullName = "Larisa Latynina",
+                Birth = DateTime.Parse("1934.12.27."),
+                BirthPlace = "Moscow",
+                Country = "Russian Federation",
+            };
+            AddAthleteIfNotExists(db, lLatynina);
+            ConnectAthleteToSportIfNotExists(db, lLatynina, swimming);
         }
 
         private void AddSportIfNotExists (AppDBContext db, DB.Models.Sport sport)

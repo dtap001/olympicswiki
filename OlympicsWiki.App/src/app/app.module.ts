@@ -14,7 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AthletesSearchComponent } from './athletes-search/athletes-search.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { AthletesTableComponent } from './athletes-table/athletes-table.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -23,6 +23,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AthleteDetailComponent } from './athlete-detail/athlete-detail.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,9 +50,13 @@ import { AthleteDetailComponent } from './athlete-detail/athlete-detail.componen
     MatNativeDateModule,
     NoopAnimationsModule,
     MatButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSnackBarModule,
+    ReactiveFormsModule
   ],
-  providers: [HttpClientModule, HttpClient],
+  providers: [HttpClientModule, HttpClient,MatSnackBarModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
